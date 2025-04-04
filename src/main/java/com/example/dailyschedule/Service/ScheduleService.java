@@ -22,8 +22,8 @@ public class ScheduleService {
     public ScheduleResponseDto saveSchedule(ScheduleRequestDto requestDto) {
         Schedule schedule = new Schedule(
                 requestDto.getTask(),
-                requestDto.getMemberName(),
-                requestDto.getPassword()
+                requestDto.getPassword(),
+                requestDto.getMemberName()
         );
         Schedule savedSchedule = scheduleRepository.saveSchedule(schedule);
         return new ScheduleResponseDto(
@@ -70,7 +70,8 @@ public class ScheduleService {
             throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
         }
         schedule.update(request.getTask(), request.getMemberName());
-        Schedule updatedSchedule = scheduleRepository.saveSchedule(schedule);
+        // Schedule updatedSchedule = scheduleRepository.saveSchedule(schedule);
+        Schedule updatedSchedule = scheduleRepository.updateSchedule(schedule); // 수정된 부분
 
         return new ScheduleResponseDto(
                 updatedSchedule.getId(),

@@ -33,7 +33,21 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
             schedule.setCreatedAt(now);
             schedule.setUpdatedAt(now);
 
+            // SQL 쿼리 수정: RETURNING id 추가
+            /**
+             * GeneratedKeyHolder는 기본적으로 단일 키(예: id)를 반환하도록 설계되었습니다.
+             * 그러나 현재 SQL 쿼리에서 반환된 키 값에 여러 필드(id, task, password, member_name, created_at, updated_at)가 포함되어 있습니다.
+             * 이로 인해 keyHolder.getKey() 호출 시 InvalidDataAccessApiUsageException이 발생합니다.
+             * PostgreSQL에서 RETURNING * 또는 RETURNING id를 사용하지 않으면, 삽입된 모든 열의 값을 반환할 수 있습니다.
+             * 현재 코드에서 Statement.RETURN_GENERATED_KEYS를 사용하고 있지만, PostgreSQL은 기본적으로 모든 열을 반환하려고 시도합니다.
+             * 해결 방법
+             * GeneratedKeyHolder를 올바르게 사용하려면, 삽입된 레코드에서 단일 키(예: id)만 반환하도록 SQL 쿼리를 수정해야 합니다.
+             */
+            
+            // MySQL, MariaDB, H2 등에서 사용
             String sql = "INSERT INTO schedule (task, password, member_name, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
+            // for postgresql
+            // String sql = "INSERT INTO schedule (task, password, member_name, created_at, updated_at) VALUES (?, ?, ?, ?, ?) RETURNING id";
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, schedule.getTask());
@@ -44,8 +58,9 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
                 return ps;
             }, keyHolder);
 
+            // 단일 키(id)만 가져오기
             schedule.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
-            return schedule;
+            return schedule;            
         }
         // 일정 모두 찾기(조회). READ.
         @Override

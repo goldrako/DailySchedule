@@ -1,0 +1,18 @@
+# GET 요청: 모든 일정 조회
+GET http://localhost:8080/schedules
+Content-Type: application/json
+###
+# GET 요청: 모든 일정 조회
+GET http://localhost:8080/schedules/2
+Content-Type: application/json
+
+###
+# PUT 요청: 일정 수정
+PUT http://localhost:8080/schedules/3
+Content-Type: application/json
+
+{
+    "task": "Updated Task",
+    "password": "password123",
+    "memberName": "Updated Member"
+}
