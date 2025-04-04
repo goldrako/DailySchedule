@@ -1,0 +1,2 @@
+DELETE http://localhost:8080/schedules/4?password=password123
+Content-Type: application/json

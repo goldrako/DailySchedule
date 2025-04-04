@@ -1,0 +1,9 @@
+# POST 요청: 일정 저장
+POST http://localhost:8080/schedules
+Content-Type: application/json
+
+{
+    "task": "New Task3",
+    "password": "password456",
+    "memberName": "John Doe"
+}
